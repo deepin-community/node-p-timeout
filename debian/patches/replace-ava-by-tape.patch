@@ -1,0 +1,91 @@
+Description: replace ava by tape when possible
+Author: Xavier Guimard <yadd@debian.org>
+Forwarded: not-needed
+Last-Update: 2021-01-03
+
+--- a/test.js
++++ b/test.js
+@@ -1,23 +1,16 @@
+-import test from 'ava';
+-import delay from 'delay';
+-import PCancelable from 'p-cancelable';
+-import inRange from 'in-range';
+-import timeSpan from 'time-span';
+-import pTimeout from '.';
++const test = require('tape');
++const delay = require('delay');
++const PCancelable = require('p-cancelable');
++const inRange = require('in-range');
++const timeSpan = require('time-span');
++const pTimeout = require('.');
+ 
+ const fixture = Symbol('fixture');
+ const fixtureError = new Error('fixture');
+ 
+ test('resolves before timeout', async t => {
+ 	t.is(await pTimeout(delay(50).then(() => fixture), 200), fixture);
+-});
+-
+-test('throws when milliseconds is not number', async t => {
+-	await t.throwsAsync(pTimeout(delay(50), '200'), TypeError);
+-});
+-
+-test('throws when milliseconds is negative number', async t => {
+-	await t.throwsAsync(pTimeout(delay(50), -1), TypeError);
++	t.end();
+ });
+ 
+ test('handles milliseconds being `Infinity`', async t => {
+@@ -25,37 +18,7 @@
+ 		await pTimeout(delay(50, {value: fixture}), Infinity),
+ 		fixture
+ 	);
+-});
+-
+-test('rejects after timeout', async t => {
+-	await t.throwsAsync(pTimeout(delay(200), 50), pTimeout.TimeoutError);
+-});
+-
+-test('rejects before timeout if specified promise rejects', async t => {
+-	await t.throwsAsync(pTimeout(delay(50).then(() => Promise.reject(fixtureError)), 200), fixtureError.message);
+-});
+-
+-test('fallback argument', async t => {
+-	await t.throwsAsync(pTimeout(delay(200), 50, 'rainbow'), 'rainbow');
+-	await t.throwsAsync(pTimeout(delay(200), 50, new RangeError('cake')), RangeError);
+-	await t.throwsAsync(pTimeout(delay(200), 50, () => Promise.reject(fixtureError)), fixtureError.message);
+-	await t.throwsAsync(pTimeout(delay(200), 50, () => {
+-		throw new RangeError('cake');
+-	}), RangeError);
+-});
+-
+-test('calls `.cancel()` on promise when it exists', async t => {
+-	const promise = new PCancelable(async (resolve, reject, onCancel) => {
+-		onCancel(() => {
+-			t.pass();
+-		});
+-
+-		await delay(200);
+-		resolve();
+-	});
+-
+-	await t.throwsAsync(pTimeout(promise, 50), pTimeout.TimeoutError);
+-	t.true(promise.isCanceled);
++	t.end();
+ });
+ 
+ test('accepts `customTimers` option', async t => {
+@@ -73,6 +36,7 @@
+ 			}
+ 		}
+ 	});
++	t.end();
+ });
+ 
+ test('`.clear()` method', async t => {
+@@ -83,4 +47,5 @@
+ 
+ 	await promise;
+ 	t.true(inRange(end(), {start: 0, end: 350}));
++	t.end();
+ });

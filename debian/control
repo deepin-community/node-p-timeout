@@ -1,0 +1,30 @@
+Source: node-p-timeout
+Section: javascript
+Priority: optional
+Maintainer: Debian Javascript Maintainers <pkg-javascript-devel@lists.alioth.debian.org>
+Uploaders: Ansal Muhammed <a6@disroot.org>
+Build-Depends: debhelper-compat (= 13)
+ , dh-sequence-nodejs
+ , node-p-cancelable <!nocheck>
+ , node-p-finally <!nocheck>
+ , node-tape <!nocheck>
+Standards-Version: 4.5.1
+Vcs-Browser: https://salsa.debian.org/js-team/node-p-timeout
+Vcs-Git: https://salsa.debian.org/js-team/node-p-timeout.git
+Homepage: https://github.com/sindresorhus/p-timeout
+Testsuite: autopkgtest-pkg-nodejs
+Rules-Requires-Root: no
+
+Package: node-p-timeout
+Architecture: all
+Depends: ${misc:Depends}
+ , node-p-finally
+Description: Timeout a promise after a specified amount of time
+ A promise represents the result of an asynchronous operation
+ p-timeout can be used to timeout a promise by displaying a message
+ or doing a particular function.
+ .
+ Time taken before timing out and the message or function to be displayed
+ or done after timeout can be defined by the API pTimeout.
+ .
+ Node.js is an event-based server-side JavaScript engine
